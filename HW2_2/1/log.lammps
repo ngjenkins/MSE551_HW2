@@ -1,0 +1,199 @@
+LAMMPS (17 Nov 2016)
+
+# Find minimum energy fcc configuration
+# Mark Tschopp, 2010
+# Modified by Abduljabar Alsayoud
+
+# ---------- Initialize Simulation ---------------------
+clear
+units metal
+dimension 3
+boundary p p p
+atom_style atomic
+
+# ---------- Variables ---------------------
+variable lat equal 4
+
+
+# ---------- Create Atoms ---------------------
+#lattice has to be specified first -> all geometry commands are based on it
+lattice 	bcc ${lat}
+lattice 	bcc 4
+Lattice spacing in x,y,z = 4 4 4
+#region ID style args keyword (0 1 means 0 lat) (specifies the simulation cell)
+region	box block 0 1 0 1 0 1 units lattice
+#create_box N region-ID (N=# of atom types)
+create_box	1 box
+Created orthogonal box = (0 0 0) to (4 4 4)
+  1 by 1 by 1 MPI processor grid
+
+lattice	bcc 4 orient x 1 0 0 orient y 0 1 0 orient z 0 0 1
+Lattice spacing in x,y,z = 4 4 4
+#create_atoms type style
+create_atoms 1 box
+Created 2 atoms
+replicate 1 1 1
+  orthogonal box = (0 0 0) to (4 4 4)
+  1 by 1 by 1 MPI processor grid
+  2 atoms
+
+# ---------- Define Interatomic Potential ---------------------
+pair_style eam/alloy
+pair_coeff * * LAMMPS_POTENTIALS/AlCu.eam.alloy Al
+Reading potential file LAMMPS_POTENTIALS/AlCu.eam.alloy with DATE: 2008-10-01
+neighbor 2.0 bin
+neigh_modify delay 10 check yes
+
+# ---------- Define Settings ---------------------
+#compute ID group-ID style
+#potentail energy per atom
+compute poteng all pe/atom
+#the sum of all poteng
+compute eatoms all reduce sum c_poteng
+
+
+# ---------- Run Minimization ---------------------
+#So timestep start at 0
+reset_timestep 0
+fix 1 all box/relax iso 0.0 vmax 0.001
+thermo 10
+thermo_style custom step pe lx ly lz press pxx pyy pzz c_eatoms
+min_style cg
+minimize 1e-25 1e-25 5000 10000
+WARNING: Resetting reneighboring criteria during minimization (../min.cpp:168)
+Neighbor list info ...
+  1 neighbor list requests
+  update every 1 steps, delay 0 steps, check yes
+  max neighbors/atom: 2000, page size: 100000
+  master list distance cutoff = 8.6825
+  ghost atom cutoff = 8.6825
+  binsize = 4.34125 -> bins = 1 1 1
+Memory usage per processor = 3.90684 Mbytes
+Step PotEng Lx Ly Lz Press Pxx Pyy Pzz c_eatoms 
+       0   -4.3070919            4            4            4   -251761.28   -251761.28   -251761.28   -251761.28   -4.3070919 
+      10   -4.6070493         3.96         3.96         3.96   -252410.36   -252410.36   -252410.36   -252410.36   -4.6070493 
+      20   -4.8957933         3.92         3.92         3.92   -241988.16   -241988.16   -241988.16   -241988.16   -4.8957933 
+      30   -5.1587464         3.88         3.88         3.88   -218635.45   -218635.45   -218635.45   -218635.45   -5.1587464 
+      40   -5.3887596         3.84         3.84         3.84   -190504.94   -190504.94   -190504.94   -190504.94   -5.3887596 
+      50   -5.5789269          3.8          3.8          3.8    -156501.4    -156501.4    -156501.4    -156501.4   -5.5789269 
+      60   -5.7263766         3.76         3.76         3.76   -118490.44   -118490.44   -118490.44   -118490.44   -5.7263766 
+      70   -5.8302829         3.72         3.72         3.72    -80098.85    -80098.85    -80098.85    -80098.85   -5.8302829 
+      80   -5.8949849         3.68         3.68         3.68   -47710.797   -47710.797   -47710.797   -47710.797   -5.8949849 
+      90   -5.9329498         3.64         3.64         3.64   -31813.798   -31813.798   -31813.798   -31813.798   -5.9329498 
+     100   -5.9689608          3.6          3.6          3.6   -48911.254   -48911.254   -48911.254   -48911.254   -5.9689608 
+     110   -6.0354071         3.56         3.56         3.56   -83830.618   -83830.618   -83830.618   -83830.618   -6.0354071 
+     120   -6.1247853         3.52         3.52         3.52   -105730.99   -105730.99   -105730.99   -105730.99   -6.1247853 
+     130   -6.2286121         3.48        write_data 1-HW2_2__data/Aloptimized1-HW2_2_fcc.data
+Neighbor list info ...
+  1 neighbor list requests
+  update every 1 steps, delay 10 steps, check yes
+  max neighbors/atom: 2000, page size: 100000
+  master list distance cutoff = 8.6825
+  ghost atom cutoff = 8.6825
+  binsize = 4.34125 -> bins = 1 1 1
+
+variable natoms equal "count(all)"
+variable teng equal "c_eatoms"
+variable length equal "lx"
+variable ecoh equal "v_teng/v_natoms"
+
+print "Total energy (eV) = ${teng};"
+ERROR: Compute used in variable between runs is not current (../variable.cpp:1301)
+56725.635   -56725.635   -6.5413648 
+     180   -6.5798594         3.28         3.28         3.28   -36661.996   -36661.996   -36661.996   -36661.996   -6.5798594 
+     190   -6.6003279         3.24         3.24         3.24   -13965.414   -13965.414   -13965.414   -13965.414   -6.6003279 
+     200   -6.6032368     3.219112     3.219112     3.219112 2.6701633e-09 2.6636368e-09 2.6732182e-09 2.6736348e-09   -6.6032368 
+     204   -6.6032368     3.219112     3.219112     3.219112 1.3838914e-10 1.4388804e-10 1.3897235e-10 1.3230701e-10   -6.6032368 
+Loop time of 0.00814915 on 1 procs for 204 steps with 2 atoms
+
+85.9% CPU use with 1 MPI tasks x no OpenMP threads
+
+Minimization stats:
+  Stopping criterion = energy tolerance
+  Energy initial, next-to-last, final = 
+        -4.30709189417     -6.60323678084     -6.60323678084
+  Force two-norm initial, final = 30.1703 1.09415e-14
+  Force max component initial, final = 30.1703 1.0741e-14
+  Final line search alpha, max atom move = 1 1.0741e-14
+  Iterations, force evaluations = 204 213
+
+MPI task timing breakdown:
+Section |  min time  |  avg time  |  max time  |%varavg| %total
+---------------------------------------------------------------
+Pair    | 0.0034986  | 0.0034986  | 0.0034986  |   0.0 | 42.93
+Neigh   | 4.2915e-05 | 4.2915e-05 | 4.2915e-05 |   0.0 |  0.53
+Comm    | 0.0010502  | 0.0010502  | 0.0010502  |   0.0 | 12.89
+Output  | 0.00039792 | 0.00039792 | 0.00039792 |   0.0 |  4.88
+Modify  | 0          | 0          | 0          |   0.0 |  0.00
+Other   |            | 0.00316    |            |       | 38.77
+
+Nlocal:    2 ave 2 max 2 min
+Histogram: 1 0 0 0 0 0 0 0 0 0
+Nghost:    557 ave 557 max 557 min
+Histogram: 1 0 0 0 0 0 0 0 0 0
+Neighs:    136 ave 136 max 136 min
+Histogram: 1 0 0 0 0 0 0 0 0 0
+
+Total # of neighbors = 136
+Ave neighs/atom = 68
+Neighbor list builds = 1
+Dangerous builds = 0
+write_data 1-HW2_2__data/Aloptimized1-HW2_2_bcc.data
+Neighbor list info ...
+  1 neighbor list requests
+  update every 1 steps, delay 10 steps, check yes
+  max neighbors/atom: 2000, page size: 100000
+  master list distance cutoff = 8.6825
+  ghost atom cutoff = 8.6825
+  binsize = 4.34125 -> bins = 1 1 1
+
+variable natoms equal "count(all)"
+variable teng equal "c_eatoms"
+variable length equal "lx"
+variable ecoh equal "v_teng/v_natoms"
+
+print "Total energy (eV) = ${teng};"
+ERROR: Compute used in variable between runs is not current (../variable.cpp:1301)
+     -0.382493971653     -3.06265447774     -3.06265447774
+  Force two-norm initial, final = 3.79165 9.24222e-15
+  Force max component initial, final = 3.79165 9.24217e-15
+  Final line search alpha, max atom move = 1 9.24217e-15
+  Iterations, force evaluations = 333 338
+
+MPI task timing breakdown:
+Section |  min time  |  avg time  |  max time  |%varavg| %total
+---------------------------------------------------------------
+Pair    | 0.0027523  | 0.0027523  | 0.0027523  |   0.0 | 35.77
+Neigh   | 4.3154e-05 | 4.3154e-05 | 4.3154e-05 |   0.0 |  0.56
+Comm    | 0.0011883  | 0.0011883  | 0.0011883  |   0.0 | 15.44
+Output  | 0.00060606 | 0.00060606 | 0.00060606 |   0.0 |  7.88
+Modify  | 0          | 0          | 0          |   0.0 |  0.00
+Other   |            | 0.003105   |            |       | 40.35
+
+Nlocal:    1 ave 1 max 1 min
+Histogram: 1 0 0 0 0 0 0 0 0 0
+Nghost:    511 ave 511 max 511 min
+Histogram: 1 0 0 0 0 0 0 0 0 0
+Neighs:    61 ave 61 max 61 min
+Histogram: 1 0 0 0 0 0 0 0 0 0
+
+Total # of neighbors = 61
+Ave neighs/atom = 61
+Neighbor list builds = 2
+Dangerous builds = 0
+write_data 1-HW2_2__data/Aloptimized1-HW2_2_sc.data
+Neighbor list info ...
+  1 neighbor list requests
+  update every 1 steps, delay 10 steps, check yes
+  max neighbors/atom: 2000, page size: 100000
+  master list distance cutoff = 8.6825
+  ghost atom cutoff = 8.6825
+  binsize = 4.34125 -> bins = 1 1 1
+
+variable natoms equal "count(all)"
+variable teng equal "c_eatoms"
+variable length equal "lx"
+variable ecoh equal "v_teng/v_natoms"
+
+print "Total energy (eV) = ${teng};"
+ERROR: Compute used in variable between runs is not current (../variable.cpp:1301)
