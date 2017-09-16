@@ -1,0 +1,28 @@
+
+#!/bin/bash
+
+#PBS -N 1-HW2_3_25
+#PBS -W group_list=mse551-2017
+#PBS -q windfall
+### "pcmem=6gb" is the memory attribute for all of the standard nodes
+#PBS -l select=1:ncpus=1:mem=6gb:pcmem=6gb
+#PBS -l place=free:shared
+#PBS -l walltime=1:00:00
+#PBS -l cput=1:00:00
+
+### cd: set directory for job execution, ~netid = home directory path
+cd /extra/njenkins/MSE551/HW2/HW2_3/1
+
+### Load required modules/libraries
+module load lammps/gcc/17Nov16 
+
+export MPI_DSM_DISTRIBUTE
+export OMP_NUM_THREADS=1
+export LAMMPS_POTENTIALS=/extra/njenkins/LAMMPS/potentials
+export LAMMPS_DATA=/extra/njenkins/LAMMPS/data
+
+mpirun -np 1 lmp_mpi-gcc -sf opt < 1-HW2_3__in/1-HW2_3_25.in > 1-HW2_3__out/1-HW2_3_25.out
+
+rm *.e*
+rm *.o*
+

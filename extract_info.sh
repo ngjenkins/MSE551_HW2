@@ -1,7 +1,7 @@
 #!/bin/bash
 
 declare N=25;
-declare filename=1-HW2_1_;
+declare filename=1-HW2_3_;
 
 cd $PWD
 

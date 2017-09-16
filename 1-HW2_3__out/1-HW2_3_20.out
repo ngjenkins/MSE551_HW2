@@ -1,0 +1,78 @@
+LAMMPS (17 Nov 2016)
+Lattice spacing in x,y,z = 4.6 4.6 4.6
+Created orthogonal box = (0 0 0) to (4.6 4.6 4.6)
+  1 by 1 by 1 MPI processor grid
+Lattice spacing in x,y,z = 4.6 4.6 4.6
+Created 4 atoms
+Replicating atoms ...
+  orthogonal box = (0 0 0) to (4.6 4.6 4.6)
+  1 by 1 by 1 MPI processor grid
+  4 atoms
+Reading potential file LAMMPS_POTENTIALS/AlCu.eam.alloy with DATE: 2008-10-01
+WARNING: Resetting reneighboring criteria during minimization (../min.cpp:168)
+Neighbor list info ...
+  1 neighbor list requests
+  update every 1 steps, delay 0 steps, check yes
+  max neighbors/atom: 2000, page size: 100000
+  master list distance cutoff = 8.6825
+  ghost atom cutoff = 8.6825
+  binsize = 4.34125, bins = 2 2 2
+Setting up cg style minimization ...
+  Unit style    : metal
+Memory usage per processor = 3.88248 Mbytes
+Step PotEng Lx Ly Lz Press Pxx Pyy Pzz c_eatoms 
+       0   -11.879578          4.6          4.6          4.6   -36166.274   -36166.274   -36166.274   -36166.274   -11.879578 
+Loop time of 1.19209e-06 on 1 procs for 0 steps with 4 atoms
+
+0.0% CPU use with 1 MPI tasks x no OpenMP threads
+
+Minimization stats:
+  Stopping criterion = max iterations
+  Energy initial, next-to-last, final = 
+        -11.8795784302 6.58676066208e-317     -11.8795784302
+  Force two-norm initial, final = 6.59156 6.59156
+  Force max component initial, final = 6.59156 6.59156
+  Final line search alpha, max atom move = 0 0
+  Iterations, force evaluations = 0 0
+
+MPI task timing breakdown:
+Section |  min time  |  avg time  |  max time  |%varavg| %total
+---------------------------------------------------------------
+Pair    | 0          | 0          | 0          |   0.0 |  0.00
+Neigh   | 0          | 0          | 0          |   0.0 |  0.00
+Comm    | 0          | 0          | 0          |   0.0 |  0.00
+Output  | 0          | 0          | 0          |   0.0 |  0.00
+Modify  | 0          | 0          | 0          |   0.0 |  0.00
+Other   |            | 1.192e-06  |            |       |100.00
+
+Nlocal:    4 ave 4 max 4 min
+Histogram: 1 0 0 0 0 0 0 0 0 0
+Nghost:    360 ave 360 max 360 min
+Histogram: 1 0 0 0 0 0 0 0 0 0
+Neighs:    268 ave 268 max 268 min
+Histogram: 1 0 0 0 0 0 0 0 0 0
+
+Total # of neighbors = 268
+Ave neighs/atom = 67
+Neighbor list builds = 0
+Dangerous builds = 0
+System init for write_data ...
+Neighbor list info ...
+  1 neighbor list requests
+  update every 1 steps, delay 10 steps, check yes
+  max neighbors/atom: 2000, page size: 100000
+  master list distance cutoff = 8.6825
+  ghost atom cutoff = 8.6825
+  binsize = 4.34125, bins = 2 2 2
+ERROR: Compute used in variable between runs is not current (../variable.cpp:1301)
+-------------------------------------------------------
+Primary job  terminated normally, but 1 process returned
+a non-zero exit code.. Per user-direction, the job has been aborted.
+-------------------------------------------------------
+--------------------------------------------------------------------------
+mpirun detected that one or more processes exited with non-zero status, thus causing
+the job to be terminated. The first process to do so was:
+
+  Process name: [[5628,1],0]
+  Exit code:    1
+--------------------------------------------------------------------------
